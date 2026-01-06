@@ -1,0 +1,167 @@
+<!DOCTYPE html><html lang="zh-Hant"><head><meta name="x-poe-datastore-behavior" content="local_only"><meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://code.jquery.com https://unpkg.com https://d3js.org https://threejs.org https://cdn.plot.ly https://stackpath.bootstrapcdn.com https://maps.googleapis.com https://cdn.tailwindcss.com https://ajax.googleapis.com https://kit.fontawesome.com https://cdn.datatables.net https://maxcdn.bootstrapcdn.com https://code.highcharts.com https://tako-static-assets-production.s3.amazonaws.com https://www.youtube.com https://fonts.googleapis.com https://fonts.gstatic.com https://pfst.cf2.poecdn.net https://puc.poecdn.net https://i.imgur.com https://wikimedia.org https://*.icons8.com https://*.giphy.com https://picsum.photos https://images.unsplash.com; frame-src 'self' https://www.youtube.com https://trytako.com; child-src 'self'; manifest-src 'self'; worker-src 'self'; upgrade-insecure-requests; block-all-mixed-content;">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DSE 中史閃卡 - 中華人民共和國外交</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .flip-card {
+            background-color: transparent;
+            perspective: 1000px;
+        }
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+            cursor: pointer;
+        }
+        .flip-card.flipped .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+        .flip-card-front, .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+        .flip-card-front {
+            background-color: #ffffff;
+            border: 2px solid #3b82f6;
+            color: #1e40af;
+        }
+        .flip-card-back {
+            background-color: #eff6ff;
+            border: 2px solid #3b82f6;
+            color: #1e3a8a;
+            transform: rotateY(180deg);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen flex flex-col items-center py-10 px-4">
+
+    <div class="max-w-2xl w-full text-center mb-8">
+        <h1 class="text-3xl font-bold text-slate-800 mb-2">DSE 中史溫習閃卡</h1>
+        <p class="text-slate-600">主題：中華人民共和國外交 (40 張)</p>
+        <div class="mt-4 flex justify-between items-center bg-white p-4 rounded-lg shadow-sm">
+            <span id="progress" class="font-medium text-blue-600">卡片 1 / 40</span>
+            <div class="space-x-2">
+                <button onclick="prevCard()" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 rounded text-sm transition">上一張</button>
+                <button onclick="nextCard()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded text-sm transition">下一張</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 閃卡容器 -->
+    <div id="card-container" class="flip-card w-full max-w-md h-80 mb-8" onclick="toggleFlip()">
+        <div class="flip-card-inner" id="card-inner">
+            <div class="flip-card-front">
+                <p id="question" class="text-xl font-bold leading-relaxed"></p>
+            </div>
+            <div class="flip-card-back">
+                <p id="answer" class="text-lg leading-relaxed"></p>
+            </div>
+        </div>
+    </div>
+
+    <p class="text-sm text-slate-400">點擊卡片即可翻面</p>
+
+    <script>
+        const flashcards = [
+            { q: "文革期間，文藝界的主流是什麼？", a: "毛主席語錄歌、革會樣板戲。" },
+            { q: "文革對科技發展有何負面影響？", a: "科學家被視為「反動學術權威」受摧殘，研發停頓，發展滯後。" },
+            { q: "文革對中共領導層的衝擊是什麼？", a: "大量幹部被批鬥為「走資派」（如鄧小平），失去大批領導人才。" },
+            { q: "建國初期外交「一邊倒」政策的含義？", a: "堅定地倒向以蘇聯為首的社會主義陣營。" },
+            { q: "「一邊倒」政策的意識形態原因？", a: "中蘇同屬社會主義陣營，意識形態相近。" },
+            { q: "蘇聯在中共建國前提供了哪些支持？", a: "提供日軍武備、商談政權成立、提供發展模式及資金技術。" },
+            { q: "建國初期美國對華政策如何促使「一邊倒」？", a: "美國不承認新政府，支持台灣國民黨，對新中國構成威脅。" },
+            { q: "1950年兩國簽訂了哪條重要條約？", a: "《中蘇友好同盟互助條約》。" },
+            { q: "1950年代蘇聯對華援建的標誌性項目？", a: "「一五計劃」期間援助的 156 個項目。" },
+            { q: "1954年哪位蘇聯領導人訪華加強援助？", a: "赫魯曉夫。" },
+            { q: "赫魯曉夫提出的「三和路線」內容？", a: "與美國和平共處、和平競賽、和平過渡。" },
+            { q: "毛澤東如何評價赫魯曉夫的「三和路線」？", a: "認為是「修正主義」。" },
+            { q: "中蘇在對待史太林評價上有何分歧？", a: "赫魯曉夫全面否定史太林，毛澤東不滿其未事先知會盟友。" },
+            { q: "1959年中印邊界衝突中，蘇聯的立場？", a: "發表中立聲明呼籲和平共處，引起中國強烈不滿。" },
+            { q: "1960年7月，蘇聯對華採取了什麼斷交行動？", a: "突然召回全部專家，撕毀數百項合同，停止援助。" },
+            { q: "1962年中印戰事中，蘇聯支持哪一方？", a: "公開給予印度政府軍事及經濟支持。" },
+            { q: "1963-64年間，中共如何公開抨擊蘇聯？", a: "連續發表「九評」文章，稱赫魯曉夫為「現代修正主義分子」。" },
+            { q: "1969年中蘇爆發了哪場流血衝突？", a: "珍寶島事件。" },
+            { q: "韓戰對初期中美關係有何影響？", a: "中美在戰場直接對抗，美國對華實行封鎖、禁運及圍堵。" },
+            { q: "1960年代越南戰爭中中美的立場？", a: "中國支持北越，美國支持南越，關係進一步惡化。" },
+            { q: "70年代中國想改善中美關係的主因？", a: "中蘇關係緊張（珍寶島事件），為免兩面受敵，建立反蘇戰線。" },
+            { q: "70年代美國想改善中美關係的原因？", a: "受越戰拖累國力下降，欲借中國牽制蘇聯。" },
+            { q: "1971年哪項體育活動打通了中美關係？", a: "乒乓外交（美國乒乓球隊應邀訪華）。" },
+            { q: "1971年秘密訪華的美國官員是誰？", a: "國家安全助理基辛格。" },
+            { q: "1971年10月，中國在國際地位上的重大突破？", a: "恢復在聯合國的合法席位。" },
+            { q: "1972年哪位美國總統訪華？", a: "尼克遜。" },
+            { q: "中美正式建交於哪一年？", a: "1979 年。" },
+            { q: "1955年召開的亞非會議又稱什麼？", a: "萬隆會議。" },
+            { q: "周恩來在萬隆會議提出了什麼著名方針？", a: "「求同存異」。" },
+            { q: "萬隆會議重申了哪五項原則？", a: "和平共處五項原則。" },
+            { q: "「求同存異」中的「同」指什麼？", a: "共同的歷史遭遇（反殖民主義）及發展經濟的要求。" },
+            { q: "「求同存異」中的「異」指什麼？", a: "社會制度和意識形態的差異。" },
+            { q: "萬隆會議對中國外交的意義？", a: "取得亞非各國信任，拓展了美蘇兩大陣營之外的外交空間。" },
+            { q: "1960年代中蘇關係惡化的標誌？", a: "蘇聯撤走專家，撕毀合同。" },
+            { q: "為什麼中國在70年代修正外交策略？", a: "應付蘇聯威脅，尋求外交突破。" },
+            { q: "「一邊倒」政策下，蘇聯派出了多少專家來華？", a: "約五千名專家。" },
+            { q: "文革對政府機關的影響？", a: "紅衛兵衝擊黨政機關，政府陷於癱瘓。" },
+            { q: "美國在建國初期對台灣的態度？", a: "支援遷往台灣的國民黨，阻止中國收復台灣。" },
+            { q: "中蘇關係由友好轉為惡劣的轉捩點年份？", a: "1960 年（撤走專家）。" },
+            { q: "尼克遜訪華對中美關係的意義？", a: "結束多年冰封關係，開啟正常化進程。" }
+        ];
+
+        let currentIndex = 0;
+        const cardInner = document.getElementById('card-inner');
+        const cardContainer = document.getElementById('card-container');
+        const questionEl = document.getElementById('question');
+        const answerEl = document.getElementById('answer');
+        const progressEl = document.getElementById('progress');
+
+        function updateCard() {
+            cardContainer.classList.remove('flipped');
+            setTimeout(() => {
+                questionEl.innerText = flashcards[currentIndex].q;
+                answerEl.innerText = flashcards[currentIndex].a;
+                progressEl.innerText = `卡片 ${currentIndex + 1} / ${flashcards.length}`;
+            }, 150);
+        }
+
+        function toggleFlip() {
+            cardContainer.classList.toggle('flipped');
+        }
+
+        function nextCard() {
+            if (currentIndex < flashcards.length - 1) {
+                currentIndex++;
+                updateCard();
+            }
+        }
+
+        function prevCard() {
+            if (currentIndex > 0) {
+                currentIndex--;
+                updateCard();
+            }
+        }
+
+        // 初始化第一張卡片
+        updateCard();
+
+        // 鍵盤支援
+        document.addEventListener('keydown', (e) => {
+            if (e.key === ' ') toggleFlip();
+            if (e.key === 'ArrowRight') nextCard();
+            if (e.key === 'ArrowLeft') prevCard();
+        });
+    </script>
+
+
+</body></html>
