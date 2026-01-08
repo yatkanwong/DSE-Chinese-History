@@ -1,0 +1,222 @@
+<!DOCTYPE html><html lang="zh-Hant"><head><meta name="x-poe-datastore-behavior" content="local_only"><meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://code.jquery.com https://unpkg.com https://d3js.org https://threejs.org https://cdn.plot.ly https://stackpath.bootstrapcdn.com https://maps.googleapis.com https://cdn.tailwindcss.com https://ajax.googleapis.com https://kit.fontawesome.com https://cdn.datatables.net https://maxcdn.bootstrapcdn.com https://code.highcharts.com https://tako-static-assets-production.s3.amazonaws.com https://www.youtube.com https://fonts.googleapis.com https://fonts.gstatic.com https://pfst.cf2.poecdn.net https://puc.poecdn.net https://i.imgur.com https://wikimedia.org https://*.icons8.com https://*.giphy.com https://picsum.photos https://images.unsplash.com; frame-src 'self' https://www.youtube.com https://trytako.com; child-src 'self'; manifest-src 'self'; worker-src 'self'; upgrade-insecure-requests; block-all-mixed-content;">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>甲午戰爭全方位複習閃卡 (40題)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .perspective { perspective: 1500px; }
+        .flip-card-inner {
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+            cursor: pointer;
+        }
+        .flipped { transform: rotateY(180deg); }
+        .backface-hidden { backface-visibility: hidden; }
+        .rotate-y-180 { transform: rotateY(180deg); }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.3); border-radius: 10px; }
+    </style>
+</head>
+<body class="bg-slate-100 min-h-screen flex flex-col items-center py-8 px-4 font-sans">
+
+    <div class="max-w-3xl w-full">
+        <div class="text-center mb-6">
+            <h1 class="text-3xl font-black text-slate-800 tracking-tight">甲午戰爭：核心考點 40 題</h1>
+            <p class="text-slate-500 mt-2">涵蓋 2019, 2021, 2023 歷屆重點</p>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="w-full bg-gray-200 h-2 rounded-full mb-6">
+            <div id="progress-bar" class="bg-blue-600 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+        </div>
+
+        <!-- Flashcard -->
+        <div class="perspective w-full h-96 md:h-[450px]">
+            <div id="flashcard" class="flip-card-inner relative w-full h-full shadow-xl rounded-3xl">
+                <!-- Front -->
+                <div class="backface-hidden absolute inset-0 bg-white rounded-3xl p-10 flex flex-col items-center justify-center border-b-8 border-blue-500">
+                    <span id="category" class="px-3 py-1 bg-blue-100 text-blue-600 text-xs font-bold rounded-full mb-6 uppercase tracking-widest"></span>
+                    <p id="question" class="text-xl md:text-2xl font-bold text-center text-slate-800 leading-snug"></p>
+                    <div class="absolute bottom-8 text-slate-300 flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path>
+                        </svg>
+                        <span class="text-sm">點擊翻轉查看詳解</span>
+                    </div>
+                </div>
+                <!-- Back -->
+                <div class="backface-hidden rotate-y-180 absolute inset-0 bg-blue-600 rounded-3xl p-8 flex flex-col text-white">
+                    <div class="flex justify-between items-center mb-4 border-b border-blue-400 pb-2">
+                        <span class="font-bold tracking-widest">答案詳解</span>
+                        <span class="text-xs opacity-70">ANSWER</span>
+                    </div>
+                    <div id="answer-container" class="overflow-y-auto custom-scrollbar flex-grow pr-2">
+                        <p id="answer" class="text-base md:text-lg leading-relaxed"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="grid grid-cols-3 gap-4 mt-8">
+            <button onclick="prevCard()" class="flex items-center justify-center gap-2 bg-white hover:bg-slate-50 text-slate-700 font-bold py-3 px-4 rounded-xl shadow-sm border border-slate-200 transition">
+                ← 上一題
+            </button>
+            <div class="flex items-center justify-center bg-slate-800 text-white rounded-xl font-mono font-bold" id="progress-text">
+                1 / 40
+            </div>
+            <button onclick="nextCard()" class="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl shadow-sm transition">
+                下一題 →
+            </button>
+        </div>
+
+        <div class="mt-6 flex justify-center">
+            <button onclick="shuffleCards()" class="text-sm text-blue-600 hover:underline flex items-center gap-1">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                </svg> 隨機洗牌題目
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const rawData = [
+            // 背景與戰略
+            { cat: "背景", q: "甲午戰爭期間，清軍主要的兩大海軍基地為何？", a: "黃海與威海衛。" },
+            { cat: "背景", q: "威海衛在國防上的「戰略地位」是什麼？", a: "威海衛設有重要的海軍基地，是北洋艦隊的根據地，其失守會直接削弱國家的整體國防力量。" },
+            { cat: "背景", q: "威海衛與首都北京有何地理關係？", a: "威海衛是首都北京的重要屏藩（門戶），一旦失守，日軍即可直取京畿，直接威脅清廷中央的安全。" },
+            { cat: "背景", q: "甲午戰爭中哪一場海戰最為關鍵？", a: "黃海海戰。此戰後北洋艦隊損失慘重，清廷開始採取避戰保船策略。" },
+            
+            // 戰敗原因：軍事策略
+            { cat: "軍事策略", q: "李鴻章在戰爭爆發後採取了什麼樣的消極戰略？", a: "「保船避敵」策略。為了保護其苦心經營的北洋艦隊，李鴻章命令艦隊退守威海衛，避免與日軍在海上正面交鋒。" },
+            { cat: "軍事策略", q: "「保船避敵」策略最終導致了什麼後果？", a: "導致北洋艦隊完全喪失制海權，艦隊被困於威海衛港內，無法機動應戰，最終落得全軍覆沒的下場。" },
+            { cat: "軍事策略", q: "清廷在戰爭初期的應敵準備如何？", a: "極其倉促。由於內部對「和」與「戰」爭論不休，未能及時制定統一的應敵戰略，直到日軍發動全面攻擊才被迫應戰。" },
+            
+            // 戰敗原因：外交策略
+            { cat: "外交策略", q: "李鴻章在戰前奉行什麼樣的外交方針？", a: "「以夷制夷」。他昧於當時複雜的國際形勢，過度依賴外國勢力的介入來解決爭端。" },
+            { cat: "外交策略", q: "李鴻章在戰爭期間對列強抱有什麼期望？", a: "他寄望於列強（如俄、英）的調停與斡旋，企圖以和平方式解決爭端，而非積極備戰。" },
+            { cat: "外交策略", q: "外交策略的失誤如何直接導致軍事失敗？", a: "因為過分依賴外交調停，清廷坐失作戰先機，未能先發制人，導致在日軍突襲時處於被動挨打的局面。" },
+            
+            // 戰敗原因：政治與領導層
+            { cat: "領導層矛盾", q: "清廷內部在甲午戰爭中的兩大派系是誰？", a: "1. 主戰派：以光緒帝和翁同龢為首。<br>2. 主和派：以慈禧太后和李鴻章為首。" },
+            { cat: "領導層矛盾", q: "清廷內部的權力鬥爭對戰事有何負面影響？", a: "兩派未能共同商討應敵策略，政令不一，導致前線將領無所適從，嚴重削弱了國家的抗敵意志。" },
+            { cat: "領導層矛盾", q: "為什麼說清廷「和戰不定」是戰敗主因？", a: "因為戰前猶豫不決，既沒有全力備戰，也沒有成功達成和平，最終在毫無準備的情況下被捲入全面戰爭。" },
+            
+            // 戰敗原因：戰鬥力與武裝
+            { cat: "戰鬥力不足", q: "北洋艦隊在建軍後期面臨最大的問題是什麼？", a: "經費嚴重不足。受各種外在因素影響（如慈禧挪用軍費修園），艦隊自建軍後幾乎沒有購置新艦，裝備老化。" },
+            { cat: "戰鬥力不足", q: "北洋艦隊與日本海軍在軍備上有何差距？", a: "北洋艦隊雖有兩艘大型鐵甲艦，但其餘多為小船且航速慢；日本則針對北洋弱點，添置了大量航速快、火力強的新式軍艦。" },
+            { cat: "戰鬥力不足", q: "除了硬體，北洋艦隊在軟體（訓練）上有何缺失？", a: "後期幾乎沒有進行正規的軍事訓練，官兵素質下降，缺乏實戰應變能力。" },
+            { cat: "戰鬥力不足", q: "彈藥供應方面存在什麼致命問題？", a: "缺乏大口徑砲彈，且部分砲彈質量低劣（甚至有沙土彈），導致在海戰中無法有效擊毀日艦。" },
+            
+            // 戰敗原因：各地支援
+            { cat: "各地支援", q: "甲午戰爭中，清朝其他艦隊（如南洋、廣東）的表現如何？", a: "袖手旁觀，拒絕助戰。這反映了清末「門戶之見」嚴重，各省軍隊視為私人武力，缺乏國家整體的國防觀念。" },
+            { cat: "各地支援", q: "如果其他艦隊肯相助，戰局可能會有什麼改變？", a: "北洋艦隊或許不至於在威海衛陷入孤立無援的絕境，有機會保住制海權，避免全軍覆沒。" },
+            { cat: "各地支援", q: "誰被時人譏為「長腿將軍」？為什麼？", a: "主帥葉志超。他在平壤之戰中臨陣脫逃，帶領清軍狂奔數百里，導致朝鮮戰線迅速崩潰。" },
+            
+            // 馬關條約
+            { cat: "馬關條約", q: "《馬關條約》簽署的時間與地點？", a: "1895年，日本馬關（今下關）。" },
+            { cat: "馬關條約", q: "中日雙方的簽約代表分別是誰？", a: "中方：李鴻章；日方：伊藤博文。" },
+            { cat: "馬關條約", q: "根據條約，清廷割讓了哪些領土？", a: "遼東半島、台灣全島及所有附屬各島嶼、澎湖列島。" },
+            { cat: "馬關條約", q: "條約中關於賠款的內容為何？", a: "賠償日本軍費白銀二億兩（後因還遼事件追加三千萬兩）。" },
+            { cat: "馬關條約", q: "條約對中國民族工業有何打擊？", a: "允許日本人在中國通商口岸開設工廠，這使得外資能利用中國廉價勞動力與原料，直接摧殘了中國的民族產業。" },
+            
+            // 戰後影響：瓜分危機
+            { cat: "戰後影響", q: "什麼是「三國干涉還遼」？", a: "俄、德、法三國因不滿日本佔領遼東半島損害其利益，聯手逼迫日本將遼東歸還清廷。" },
+            { cat: "戰後影響", q: "「還遼事件」後，俄國取得了什麼特權？", a: "俄國以此為藉口誘使清廷簽訂《中俄密約》，取得在東北修築鐵路、開礦等特權。" },
+            { cat: "戰後影響", q: "「勢力範圍」是如何形成的？", a: "列強本著「利益均沾」原則，強行租借中國沿海港灣，並劃定勢力範圍，中國面臨被瓜分的危機。" },
+            { cat: "戰後影響", q: "俄國在甲午戰後的主要勢力範圍在哪裡？", a: "中國東北地區。" },
+            { cat: "戰後影響", q: "德國在甲午戰後租借了哪個地方？", a: "山東膠州灣。" },
+            { cat: "戰後影響", q: "英國在甲午戰後擴張了哪些勢力？", a: "租借威海衛及新界，並將長江流域劃為其勢力範圍。" },
+            { cat: "戰後影響", q: "法國在甲午戰後的勢力範圍在哪？", a: "租借廣州灣，勢力範圍涵蓋雲南、廣西、廣東。" },
+            
+            // 戰後影響：門戶開放
+            { cat: "門戶開放", q: "美國為何提出「門戶開放政策」？", a: "美國當時正忙於美西戰爭，待欲向東方發展時，列強已劃分勢力範圍，妨礙了美國在華謀取利益的機會。" },
+            { cat: "門戶開放", q: "「門戶開放政策」的核心內容是什麼？", a: "主張中國市場向全世界開放，各國在華利益均等，機會均沾，以維護美國的商業利益。" },
+            { cat: "門戶開放", q: "英國對「門戶開放政策」的態度如何？", a: "英國表示同意，因為這符合其自由貿易的利益。" },
+            { cat: "門戶開放", q: "門戶開放政策最終是如何被宣佈成功的？", a: "在其他列強不表反對的情況下，美國宣佈該政策已得到各國一致同意。" },
+            { cat: "門戶開放", q: "門戶開放政策對中國局勢有何影響？", a: "暫時緩和了列強瓜分中國的尖銳矛盾，但本質上是為了共同掠奪中國。" },
+            
+            // 綜合總結
+            { cat: "綜合分析", q: "為什麼說甲午戰爭是洋務運動失敗的標誌？", a: "洋務運動標榜「中學為體，西學為用」，僅學習西方技術而不改制度。甲午戰敗證明單純引進器物無法救國。" },
+            { cat: "綜合分析", q: "甲午戰敗對中國人的民族意識有何啟發？", a: "引發了空前的民族危機感，促使有識之士發起維新變法（戊戌變法）及後來的辛亥革命。" },
+            { cat: "綜合分析", q: "日本透過甲午戰爭獲得了什麼地位？", a: "日本一躍成為亞洲強國，利用賠款進一步發展工業與軍事，邁向帝國主義道路。" }
+        ];
+
+        let cards = [...rawData];
+        let currentIndex = 0;
+        const cardElement = document.getElementById('flashcard');
+        const questionElement = document.getElementById('question');
+        const answerElement = document.getElementById('answer');
+        const categoryElement = document.getElementById('category');
+        const progressText = document.getElementById('progress-text');
+        const progressBar = document.getElementById('progress-bar');
+
+        function updateCard() {
+            cardElement.classList.remove('flipped');
+            
+            // Smooth transition for text
+            setTimeout(() => {
+                const current = cards[currentIndex];
+                questionElement.innerText = current.q;
+                answerElement.innerHTML = current.a;
+                categoryElement.innerText = current.cat;
+                
+                // Update Progress
+                const progressPercent = ((currentIndex + 1) / cards.length) * 100;
+                progressText.innerText = `${currentIndex + 1} / ${cards.length}`;
+                progressBar.style.width = `${progressPercent}%`;
+                
+                // Reset scroll position
+                document.getElementById('answer-container').scrollTop = 0;
+            }, 150);
+        }
+
+        function nextCard() {
+            if (currentIndex < cards.length - 1) {
+                currentIndex++;
+                updateCard();
+            } else {
+                alert("太棒了！你已完成所有 40 題複習。");
+                currentIndex = 0;
+                updateCard();
+            }
+        }
+
+        function prevCard() {
+            if (currentIndex > 0) {
+                currentIndex--;
+                updateCard();
+            }
+        }
+
+        function shuffleCards() {
+            for (let i = cards.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [cards[i], cards[j]] = [cards[j], cards[i]];
+            }
+            currentIndex = 0;
+            updateCard();
+            alert("題目已重新隨機排序！");
+        }
+
+        cardElement.addEventListener('click', () => {
+            cardElement.classList.toggle('flipped');
+        });
+
+        // Keyboard Navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space' || e.code === 'Enter') {
+                cardElement.classList.toggle('flipped');
+            } else if (e.code === 'ArrowRight') {
+                nextCard();
+            } else if (e.code === 'ArrowLeft') {
+                prevCard();
+            }
+        });
+
+        // Initialize
+        updateCard();
+    </script>
+
+
+</body></html>
